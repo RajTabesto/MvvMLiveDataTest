@@ -11,8 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Random
 
-class MyViewModel(application: Application) : AndroidViewModel(application), FruitRepository.FruitRepositoryListener {
-    private val fruitRepository = FruitRepository(application, this)
+class MyViewModel(application: Application) : AndroidViewModel(application) {
+    private val fruitRepository = FruitRepository(application)
     private val fruitList: MutableLiveData<List<String>> by lazy {
         MutableLiveData<List<String>>().also {
             loadFruits()
@@ -25,30 +25,15 @@ class MyViewModel(application: Application) : AndroidViewModel(application), Fru
 
     private fun loadFruits() {
         // Do an asynchronous operation to fetch fruit list
-        /*val myHandler = Handler(Looper.getMainLooper())
-        myHandler.postDelayed({
+        viewModelScope.launch {
             val fruitsStringList: MutableList<String> = ArrayList()
-            fruitsStringList.add("Mango")
-            fruitsStringList.add("Apple")
-            fruitsStringList.add("Orange")
-            fruitsStringList.add("Banana")
-            fruitsStringList.add("Grapes")
+            val fruits: List<Fruit> = fruitRepository.getAllFruit()
+            for (fruit in fruits) {
+                fruit.name?.let { fruitsStringList.add(it) }
+            }
             val seed = System.nanoTime()
             fruitsStringList.shuffle(Random(seed))
-            fruitList.setValue(fruitsStringList)
-        }, 5000)*/
-        viewModelScope.launch {
-            fruitRepository.getAllFruit()
+            fruitList.value = fruitsStringList
         }
-    }
-
-    override fun onAllFruitRetrievedSuccessfully(fruits: List<Fruit>) {
-        val fruitsStringList: MutableList<String> = ArrayList()
-        for (fruit in fruits) {
-            fruit.name?.let { fruitsStringList.add(it) }
-        }
-        val seed = System.nanoTime()
-        fruitsStringList.shuffle(Random(seed))
-        fruitList.value = fruitsStringList
     }
 }
