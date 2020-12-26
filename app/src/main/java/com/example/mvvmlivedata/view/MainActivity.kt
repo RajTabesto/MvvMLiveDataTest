@@ -10,17 +10,20 @@ import com.example.mvvmlivedata.viewmodel.MyViewModel
 import com.example.mvvmlivedata.R
 import com.example.mvvmlivedata.databinding.ActivityMainBinding
 import com.example.mvvmlivedata.databinding.ListItemRowBinding
+import com.example.mvvmlivedata.viewmodel.MyViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bindingActivityMain = ActivityMainBinding.inflate(layoutInflater)
-        val bindingItemRow = ListItemRowBinding.inflate(layoutInflater)
+        // this binding is not working for this list adapter to test with recycler view adapter
+        //val bindingItemRow = ListItemRowBinding.inflate(layoutInflater)
         setContentView(bindingActivityMain.root)
 
         bindingActivityMain.progressbar.visibility = View.VISIBLE
-        val model: MyViewModel = ViewModelProvider(this).get(MyViewModel::class.java);
+        //val model: MyViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        val model: MyViewModel = MyViewModelFactory(application).create(MyViewModel::class.java)
         model.getFruitList().observe(this, Observer<List<String>>() { fruits ->
             val adapter: ArrayAdapter<String> = ArrayAdapter(
                 this,
