@@ -1,4 +1,4 @@
-package com.example.mvvmlivedata
+package com.example.mvvmlivedata.viewmodel
 
 import android.os.Handler
 import android.os.Looper
